@@ -2,11 +2,51 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Azure App</title>
+  <title>Azure Area Calculator</title>
 </head>
 <body>
-  <h1>Hello from Azure!</h1>
-  <p>My first Web App deployment.</p>
+  <h1>Azure Area Calculator</h1>
+
+  <p>This application uses Azure Web App as the frontend and Azure Function as the backend.</p>
+
+  <label for="shape">Choose shape:</label>
+  <select id="shape">
+    <option value="square">Square</option>
+    <option value="circle">Circle</option>
+  </select>
+
+  <br><br>
+
+  <label for="value">Value:</label>
+  <input id="value" type="number" value="5">
+
+  <br><br>
+
+  <button onclick="calculateArea()">Calculate area</button>
+
+  <h2 id="result"></h2>
+
+  <script>
+    async function calculateArea() {
+      const shape = document.getElementById("shape").value;
+      const value = document.getElementById("value").value;
+
+      const functionUrl = "https://wrx94669-calculate-area-hrfwd4h8d0qqdchd.spaincentral-01.azurewebsites.net/api/calculatearea";
+
+      try {
+        const response = await fetch(`${functionUrl}?shape=${shape}&value=${value}`);
+        const data = await response.json();
+
+        if (data.error) {
+          document.getElementById("result").innerText = "Error: " + data.error;
+        } else {
+          document.getElementById("result").innerText =
+            `Area of ${data.shape}: ${data.area}`;
+        }
+      } catch (error) {
+        document.getElementById("result").innerText = "Connection error: " + error;
+      }
+    }
+  </script>
 </body>
 </html>
